@@ -1,10 +1,10 @@
 /*
 
-    This code is from https://github.com/lhartikk/simple-chess-ai found in the script.js file.
+    This code is abstracted from https://github.com/lhartikk/simple-chess-ai found in the script.js file.
 
 */
 
-var evaluateBoard = function (board) {
+var eval_2 = function (board) {
     var totalEvaluation = 0;
     for (var i = 0; i < 8; i++) {
         for (var j = 0; j < 8; j++) {

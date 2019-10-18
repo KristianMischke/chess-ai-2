@@ -1,20 +1,12 @@
-// Computer makes a move with algorithm choice and skill/depth level
-var makeMove = function(algo, skill=3) {
+// Computer makes a move with eval choice and depth level
+var makeMove = function(eval, depth=3) {
   // exit if the game is over
   if (game.game_over() === true) {
     console.log('game over');
     return;
   }
   // Calculate the best move, using chosen algorithm
-  if (algo === 1) {
-    var move = randomMove();
-  } else if (algo === 2) {
-    var move = calcBestMoveOne(game.turn());
-  } else if (algo === 3) {
-    var move = calcBestMoveNoAB(skill, game, game.turn())[1];
-  } else {
-    var move = calcBestMove(skill, game, game.turn())[1];
-  }
+  var move = calcBestMove(eval, depth, game, game.turn())[1];
   // Make the calculated move
   game.move(move);
   // Update board positions
@@ -22,17 +14,29 @@ var makeMove = function(algo, skill=3) {
 }
 
 // Computer vs Computer
-var playGame = function(algo=4, skillW=2, skillB=2) {
+var playGame = function(evalW=eval_1, depthW=3, evalB=eval_1, depthB=3) {
+  if(clearFlag) {
+    console.log("clearing board");
+    board.start();
+    game.clear();
+    return;
+  }
   if (game.game_over() === true) {
     console.log('game over');
     return;
   }
-  var skill = game.turn() === 'w' ? skillW : skillB;
-  makeMove(algo, skill);
+  var eval = game.turn() === 'w' ? evalW : evalB;
+  var depth = game.turn() === 'w' ? depthW : depthB;
+  makeMove(eval, depth);
   window.setTimeout(function() {
-    playGame(algo, skillW, skillB);
+    playGame(evalW, depthW, evalB, depthB);
   }, 250);
 };
+
+var clearFlag = false;
+var resetBoard = function() {
+  clearFlag = true;
+}
 
 // Handles what to do after human makes move.
 // Computer automatically makes next move
@@ -52,6 +56,6 @@ var onDrop = function(source, target) {
 
   // make move for black
   window.setTimeout(function() {
-    makeMove(4, 3);
+    makeMove(eval_1, 3);
   }, 250);
 };
