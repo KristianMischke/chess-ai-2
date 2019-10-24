@@ -4,11 +4,12 @@
 
 */
 
-var eval_2 = function (board) {
+var eval_2 = function (board, color) {
     var totalEvaluation = 0;
     for (var i = 0; i < 8; i++) {
         for (var j = 0; j < 8; j++) {
-            totalEvaluation = totalEvaluation + getPieceValue(board[i][j], i ,j);
+            var pieceEvalulation = getPieceValue(board[i][j], i ,j) * (color === 'w' ? 1 : -1); // [added by Kristian] need to account for team color in piece value
+            totalEvaluation = totalEvaluation + pieceEvalulation;
         }
     }
     return totalEvaluation;
