@@ -51,10 +51,7 @@ var testManyGames = function(x = 0, i = 0, j = 0, k = 0, l = 0) {
    if (scoreSheet[whiteKey][blackKey] === undefined)
       scoreSheet[whiteKey][blackKey] = [];
    
-   document.getElementById("gameTitle").innerText = "White: " + evalW.name + ", depth_" + depthW + "\n Black: " + evalB.name + ", depth_" + depthB;
-   document.getElementById("eval_1").innerText = "eval_1 = w: " + eval_1(game.board(), "w") + "\t\tb: " + eval_1(game.board(), "b");
-   document.getElementById("eval_2").innerText = "eval_2 = w: " + eval_2(game.board(), "w") + "\t\tb: " + eval_2(game.board(), "b");
-   document.getElementById("eval_3").innerText = "eval_3 = w: " + eval_3(game.board(), "w") + "\t\tb: " + eval_3(game.board(), "b");
+   updateEvalInfo(evalW, depthW, evalB, depthB);
 
    if (currentGameStartTime === null)
    {
@@ -124,12 +121,16 @@ var testManyGames = function(x = 0, i = 0, j = 0, k = 0, l = 0) {
    }
 }
 
-// Computer vs Computer
-var playGame = function(evalW=eval_1, depthW=3, evalB=eval_1, depthB=3) {
+var updateEvalInfo = function(evalW, depthW, evalB, depthB) {
    document.getElementById("gameTitle").innerText = "White: " + evalW.name + ", depth_" + depthW + "\n Black: " + evalB.name + ", depth_" + depthB;
    document.getElementById("eval_1").innerText = "eval_1 = w: " + eval_1(game.board(), "w") + "\t\tb: " + eval_1(game.board(), "b");
    document.getElementById("eval_2").innerText = "eval_2 = w: " + eval_2(game.board(), "w") + "\t\tb: " + eval_2(game.board(), "b");
    document.getElementById("eval_3").innerText = "eval_3 = w: " + eval_3(game.board(), "w") + "\t\tb: " + eval_3(game.board(), "b");
+}
+
+// Computer vs Computer
+var playGame = function(evalW=eval_1, depthW=3, evalB=eval_1, depthB=3) {
+   updateEvalInfo(evalW, depthW, evalB, depthB);
 
    if(clearFlag) {
       console.log("clearing board");
@@ -154,24 +155,45 @@ var resetBoard = function() {
   clearFlag = true;
 }
 
+
+var cpuEval = eval_1;
+var cpuDepth = 1;
+var assignCPU = function() {
+   switch(document.getElementById("evalSelect").value)
+   {
+      case "eval_1": cpuEval = eval_1; break;
+      case "eval_2": cpuEval = eval_2; break;
+      case "eval_3": cpuEval = eval_3; break;
+   }
+   switch(document.getElementById("depthSelect").value)
+   {
+      case "depth_1": cpuDepth = 1; break;
+      case "depth_2": cpuDepth = 2; break;
+      case "depth_3": cpuDepth = 3; break;
+   }
+}
+
 // Handles what to do after human makes move.
 // Computer automatically makes next move
 var onDrop = function(source, target) {
-  // see if the move is legal
-  var move = game.move({
-    from: source,
-    to: target,
-    promotion: 'q' // NOTE: always promote to a queen for example simplicity
-  });
+   updateEvalInfo({name:"Human"}, "N/A", cpuEval, cpuDepth);
 
-  // If illegal move, snapback
-  if (move === null) return 'snapback';
+   // see if the move is legal
+   var move = game.move({
+      from: source,
+      to: target,
+      promotion: 'q' // NOTE: always promote to a queen for example simplicity
+   });
 
-  // Log the move
-  console.log(move)
+   // If illegal move, snapback
+   if (move === null) return 'snapback';
 
-  // make move for black
-  window.setTimeout(function() {
-    makeMove(eval_1, 3);
-  }, 250);
+   // Log the move
+   console.log(move)
+
+   // make move for black
+   window.setTimeout(function() {
+      makeMove(eval_3, 3);
+      updateEvalInfo({name:"Human"}, "N/A", cpuEval, cpuDepth);
+   }, 250);
 };
