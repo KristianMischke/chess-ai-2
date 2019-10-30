@@ -193,7 +193,7 @@ var onDrop = function(source, target) {
 
    // make move for black
    window.setTimeout(function() {
-      makeMove(eval_3, 3);
+      makeMove(cpuEval, cpuDepth);
       updateEvalInfo({name:"Human"}, "N/A", cpuEval, cpuDepth);
    }, 250);
 };
